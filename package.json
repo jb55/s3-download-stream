@@ -1,0 +1,24 @@
+{
+  "name": "s3-download-stream",
+  "description": "s3 download streams",
+  "keywords": [],
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jb55/s3-download-stream.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "async": "^0.9.0",
+    "debug": "^2.0.0",
+    "readable-stream": "^1.0.31"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.0.15",
+    "take-stream": "0.0.0",
+    "tape": "^2.14.0"
+  }
+}
