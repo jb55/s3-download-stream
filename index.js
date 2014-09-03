@@ -19,6 +19,7 @@ function S3Readable(opts) {
   this.params = opts.params;
   this.bytesReading = 0;
   this.working = 0;
+  this.done = false;
   this.concurrency = opts.concurrency || 6;
   this.queue = new SimpleQueue(worker, processed, null, this.concurrency)
   var self = this;
@@ -30,9 +31,11 @@ function S3Readable(opts) {
   }
 
   function processed(err, result) {
+    if (self.done) return;
     self.working -= 1
-    debug("working %d queue %d %s", self.working, self.queue._queue.length, result.range);
+    debug("%s working %d queue %d %s", self.params.Key, self.working, self.queue._queue.length, result.range);
     if (err) return self.emit('error', err)
+    self.done = result.data === null;
     self.push(result.data);
   }
 }
@@ -48,7 +51,7 @@ S3Readable.prototype.sip = function(from, numBytes, done) {
   var rng = this.params.Range = range(from, numBytes)
   var req = self.client.getObject(self.params, function(err, res){
     // range is past EOF, can return safely
-    if (err && err.statusCode === 416) return self.push(null)
+    if (err && err.statusCode === 416) return done(null, { data: null })
     if (err) return self.emit('error', err);
     var contentLength = +res.ContentLength;
     var data = contentLength === 0? null : res.Body;
@@ -57,5 +60,5 @@ S3Readable.prototype.sip = function(from, numBytes, done) {
 }
 
 function range(from, toRead) {
-  return util.format("bytes=%d-%d", from, from+toRead);
+  return util.format("bytes=%d-%d", from, from+toRead-1);
 }
