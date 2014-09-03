@@ -1,7 +1,7 @@
 
 # s3-download-stream
 
-  Streaming downloads from S3
+  Very fast concurrent + streaming downloads from S3
 
 ## Installation
 
@@ -29,6 +29,7 @@ var auth = {
 var file = process.env.S3_KEY;
 var config = {
   client: new aws.S3(auth),
+  concurrency: 6,
   params: {
     Key: file,
     Bucket: process.env.S3_BUCKET
