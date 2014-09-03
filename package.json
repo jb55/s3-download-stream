@@ -1,7 +1,7 @@
 {
   "name": "s3-download-stream",
   "description": "s3 download streams",
-  "keywords": [],
+  "keywords": ["s3"],
   "version": "0.0.1",
   "repository": {
     "type": "git",
