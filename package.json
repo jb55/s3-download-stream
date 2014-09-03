@@ -12,13 +12,10 @@
     "test": "node test.js"
   },
   "dependencies": {
-    "async": "^0.9.0",
-    "debug": "^2.0.0",
-    "readable-stream": "^1.0.31"
+    "debug": "^2.0.0"
   },
   "devDependencies": {
     "aws-sdk": "^2.0.15",
-    "take-stream": "0.0.0",
     "tape": "^2.14.0"
   }
 }

@@ -1,7 +1,6 @@
-var Readable = require('readable-stream');
+var Readable = require('stream').Readable;
 var util = require('util');
 var debug = require('debug')('s3-download-stream')
-var async = require('async');
 util.inherits(S3Readable, Readable);
 
 module.exports = S3Readable;
@@ -21,32 +20,15 @@ function S3Readable(opts) {
 
 S3Readable.prototype._read = function(numBytes) {
   var self = this;
-  var shouldSip = true;
-  debug('_read');
-
-  async.whilst(test, sip, function(err){
-    if (err) return self.emit('error', err);
-  });
-
-  function test() { return shouldSip; };
-  function sip(done) {
-    self.sip(numBytes, function(err, keepSipping){
-      shouldSip = keepSipping;
-      done(err);
-    });
-  }
-}
-
-S3Readable.prototype.sip = function(numBytes, done) {
-  var self = this;
+  debug("_read")
   this.params.Range = range(this.bytesRead, numBytes)
-  debug('range %s', this.params.Range);
   var req = self.client.getObject(self.params, function(err, res){
-    if (err) return done(err)
+    // range is past EOF, can return safely
+    if (err && err.statusCode === 416) return self.push(null)
+    if (err) return self.emit('error', err);
     var contentLength = +res.ContentLength;
     self.bytesRead += contentLength;
-    var keepPushing = self.push(res.Body);
-    done(null, keepPushing)
+    self.push(contentLength === 0? null : res.Body);
   });
 }
 

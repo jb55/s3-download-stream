@@ -19,13 +19,14 @@ var config = {
 }
 
 
-test('chunks read ok', function(t){
-  t.plan(2);
+test('first chunk reads ok', function(t){
+  t.plan(1);
 
   var stream = downloader(config)
 
   stream.on('data', function(chunk){
     t.ok(chunk.length > 0, "chunk size " + chunk.length);
+    stream.pause()
   });
 
   stream.on('error', function(err) {
