@@ -10,14 +10,16 @@ var auth = {
   accessKeyId: process.env.S3_ACCESS_KEY
 }
 
+var client = new aws.S3(auth);
+var bucket = process.env.S3_BUCKET
+
 var config = {
-  client: new aws.S3(auth),
+  client: client,
   params: {
     Key: process.env.S3_KEY,
-    Bucket: process.env.S3_BUCKET
+    Bucket: bucket
   }
 }
-
 
 test('first chunk reads ok', function(t){
   t.plan(1);
@@ -31,5 +33,24 @@ test('first chunk reads ok', function(t){
 
   stream.on('error', function(err) {
     t.error(err);
+  });
+});
+
+test('expect no such key error', function(t){
+  t.plan(1);
+
+  var stream = downloader({
+    client: client,
+    params: {
+      Key: 'dskjsdfsdf',
+      Bucket: bucket
+    }
+  })
+
+  stream.on('data', function(chunk){
+  });
+
+  stream.on('error', function(err) {
+    t.equal(err.code, 'NoSuchKey');
   });
 });

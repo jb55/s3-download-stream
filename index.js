@@ -32,9 +32,12 @@ function S3Readable(opts) {
 
   function processed(err, result) {
     if (self.done) return;
+    if (err) {
+      self.done = true;
+      return self.emit('error', err)
+    }
     self.working -= 1
     debug("%s working %d queue %d %s", self.params.Key, self.working, self.queue._queue.length, result.range);
-    if (err) return self.emit('error', err)
     self.done = result.data === null;
     self.push(result.data);
   }
@@ -52,7 +55,7 @@ S3Readable.prototype.sip = function(from, numBytes, done) {
   var req = self.client.getObject(self.params, function(err, res){
     // range is past EOF, can return safely
     if (err && err.statusCode === 416) return done(null, { data: null })
-    if (err) return self.emit('error', err);
+    if (err) return done(err)
     var contentLength = +res.ContentLength;
     var data = contentLength === 0? null : res.Body;
     done(null, {range: rng, data: data, contentLength: contentLength});
