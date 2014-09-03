@@ -11,7 +11,7 @@
 
 ## Example
 
-```
+```js
 var downloader = require('s3-download-stream')
 var aws = require('aws-sdk')
 
