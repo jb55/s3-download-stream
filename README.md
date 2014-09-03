@@ -22,10 +22,13 @@ var auth = {
   accessKeyId: process.env.S3_ACCESS_KEY
 }
 
+//
+// params documentation:
+// http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getObject-property
+//
 var file = process.env.S3_KEY;
 var config = {
   client: new aws.S3(auth),
-  // http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getObject-property
   params: {
     Key: file,
     Bucket: process.env.S3_BUCKET
