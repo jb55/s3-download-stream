@@ -20,6 +20,7 @@ function S3Readable(opts) {
   this.bytesReading = 0;
   this.working = 0;
   this.done = false;
+  this.chunkSize = opts.chunkSize;
   this.concurrency = opts.concurrency || 6;
   this.queue = new SimpleQueue(worker, processed, null, this.concurrency)
   var self = this;
