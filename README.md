@@ -41,6 +41,21 @@ downloader(config)
   .pipe(fs.createWriteStream("/tmp/" + file)
 ```
 
+## API
+
+### var downloader = require('s3-download-stream')(config)
+
+`config` options:
+
+* `client`: [AWS.S3](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html) instance
+
+* `concurrency`: (default `6`) Number of download workers.
+
+* `chunkSize`: (default `512KB`) multiply this by concurrency to get rough MBps.
+  set to `null` to use chunk size chosen by downstream `read(n)` calls (usually `16KB`)
+
+* `params`: See [AWS docs](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getObject-property)
+
 ## License
 
     The MIT License (MIT)
