@@ -20,7 +20,9 @@ function S3Readable(opts) {
   this.bytesReading = 0;
   this.working = 0;
   this.done = false;
-  this.chunkSize = opts.chunkSize;
+  // allow for setting chunkSize = null so that default read amount kicks in
+  // otherwise, use an optimized chunksize for downloading
+  this.chunkSize = opts.chunkSize === undefined ? 1024*512 : opts.chunkSize;
   this.concurrency = opts.concurrency || 6;
   this.queue = new SimpleQueue(worker, processed, null, this.concurrency)
   var self = this;
