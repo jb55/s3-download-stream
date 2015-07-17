@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "SimpleQueue": "0.0.1",
+    "clone": "^1.0.2",
     "debug": "^2.0.0"
   },
   "devDependencies": {
