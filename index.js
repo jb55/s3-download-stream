@@ -2,6 +2,7 @@ var Readable = require('stream').Readable;
 var util = require('util');
 var debug = require('debug')('s3-download-stream');
 var SimpleQueue = require('SimpleQueue');
+var clone = require('clone');
 util.inherits(S3Readable, Readable);
 
 module.exports = S3Readable;
@@ -54,8 +55,9 @@ S3Readable.prototype._read = function(numBytes) {
 
 S3Readable.prototype.sip = function(from, numBytes, done) {
   var self = this;
-  var rng = this.params.Range = range(from, numBytes)
-  var req = self.client.getObject(self.params, function(err, res){
+  var params = clone(this.params)
+  var rng = params.Range = range(from, numBytes)
+  var req = self.client.getObject(params, function(err, res){
     // range is past EOF, can return safely
     if (err && err.statusCode === 416) return done(null, { data: null })
     if (err) return done(err)
