@@ -16,11 +16,11 @@
   },
   "dependencies": {
     "SimpleQueue": "0.0.1",
-    "clone": "^1.0.2",
-    "debug": "^2.0.0"
+    "clone": "^2.1.1",
+    "debug": "^3.1.0"
   },
   "devDependencies": {
-    "aws-sdk": "^2.0.15",
-    "tape": "^2.14.0"
+    "aws-sdk": "^2.130.0",
+    "tape": "^4.8.0"
   }
 }
