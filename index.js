@@ -38,6 +38,7 @@ function S3Readable(opts) {
     if (self.done) return;
     if (err) {
       self.done = true;
+      if (err.code == 'NoSuchKey') err.notFound = true
       return self.emit('error', err)
     }
     self.working -= 1

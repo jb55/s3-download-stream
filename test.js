@@ -37,7 +37,7 @@ test('first chunk reads ok', function(t){
 });
 
 test('expect no such key error', function(t){
-  t.plan(1);
+  t.plan(2);
 
   var stream = downloader({
     client: client,
@@ -52,5 +52,6 @@ test('expect no such key error', function(t){
 
   stream.on('error', function(err) {
     t.equal(err.code, 'NoSuchKey');
+    t.equal(err.notFound, true);
   });
 });
