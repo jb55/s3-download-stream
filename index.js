@@ -44,11 +44,13 @@ function S3Readable(opts) {
     self.working -= 1
     debug("%s working %d queue %d %s", self.params.Key, self.working, self.queue._queue.length, result.range);
     self.done = result.data === null;
+    if (!self.done) self.done = result.contentLength < self.chunkSize;
     self.push(result.data);
   }
 }
 
 S3Readable.prototype._read = function(numBytes) {
+  if (this.done) return;
   var toQueue = this.concurrency - this.queue._queue.length;
   for (var i = 0; i < toQueue; ++i)
     this.queue.push(this.chunkSize || numBytes);
@@ -57,13 +59,13 @@ S3Readable.prototype._read = function(numBytes) {
 S3Readable.prototype.sip = function(from, numBytes, done) {
   var self = this;
   var params = clone(this.params)
-  var rng = params.Range = range(from, numBytes)
+  var rng = params.Range = range(from, numBytes);
   var req = self.client.getObject(params, function(err, res){
     // range is past EOF, can return safely
     if (err && err.statusCode === 416) return done(null, { data: null })
     if (err) return done(err)
     var contentLength = +res.ContentLength;
-    var data = contentLength === 0? null : res.Body;
+    var data = contentLength === 0 ? null : res.Body;
     done(null, {range: rng, data: data, contentLength: contentLength});
   });
 }
