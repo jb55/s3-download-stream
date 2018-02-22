@@ -1,6 +1,8 @@
 
 # s3-download-stream
 
+[![Build Status](https://travis-ci.org/jb55/s3-download-stream.svg)](https://travis-ci.org/jb55/s3-download-stream)
+
   Very fast concurrent + streaming downloads from S3
 
 ## Installation
